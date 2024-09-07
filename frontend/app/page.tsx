@@ -1,75 +1,64 @@
-"use client";
+"use client"
 
-import Image from "next/image";
+import React from "react";
 import NavBar from "@/components/nav-bar";
-import CoinCard from "@/components/coin-card";
-import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { MatchList } from "@/components/matches";
+import { IDKitWidget, VerificationLevel } from '@worldcoin/idkit'
+import { verify } from "./actions/verify";
+import { useRouter } from 'next/navigation';
 
-type Token = {
-  name: string;
-  symbol: string;
-  address: string;
+// TODO: Calls your implemented server route
+const verifyProof = async (proof) => {
+  console.log(
+    "Proof received from IDKit, sending to backend:\n",
+    JSON.stringify(proof)
+  ); // Log the proof from IDKit to the console for visibility
+  const data = await verify(proof);
+
+  console.log("data", data);
+
+  if (data.success) {
+    console.log("Successful response from backend:\n", JSON.stringify(data)); // Log the response from our backend for visibility
+  } else {
+    throw new Error(`Verification failed: ${data.error}`);
+  }
 };
 
-export default function Home() {
-  const [tokenIndex, setTokenIndex] = useState(0);
 
-  const {
-    data: tokens = [],
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["tokens"],
-    queryFn: async () => {
-      const response = await fetch(
-        "https://sei-api.dragonswap.app/api/v1/tokens"
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data = await response.json();
-      const tokens = data.tokens;
-      // sort tokens by liquidity
-      tokens.sort((a: any, b: any) => b.liquidity - a.liquidity);
-      return tokens;
-    },
-  });
+const LoginPage = () => {
+  const router = useRouter();
 
-  console.log("huy", JSON.stringify(tokens[tokenIndex]));
-
-  const changeToken = () => {
-    setTokenIndex((prevIndex) => (prevIndex + 1) % tokens.length);
+  const onSuccess = () => {
+    router.push('/swipe');
   };
 
-  const token = tokens[tokenIndex];
-
-  const price = token?.["usd_price"] ?? 0;
-  const volume = token?.["daily_volume"] ?? 0;
-  const liquidity = token?.liquidity ?? 0;
-  const change = token?.change;
-
   return (
-    <div className="flex flex-col min-h-screen">
-      <main className="flex w-full flex-grow bg-background justify-center items-center">
-        {tokens.length > 0 && (
-          <CoinCard
-            key={tokens[tokenIndex].symbol}
-            address={tokens[tokenIndex].address}
-            changeToken={changeToken}
-            name={tokens[tokenIndex].name}
-            symbol={tokens[tokenIndex].symbol}
-            price={price}
-            // fdv={tokens[tokenIndex].fdv}
-            volume={volume}
-            liquidity={liquidity}
-            change={change}
-            // image={tokens[tokenIndex].image}
-          />
-        )}
-        {isLoading && <div>Loading...</div>}
-      </main>
-      <NavBar />
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-[#171717] to-[#414141]">
+      <div className="bg-white p-8 rounded-xl shadow-2xl text-center max-w-md">
+      <img 
+          src="coinswipe_logo.svg" 
+          alt="Welcome" 
+          className="w-64 h-auto mb-6 mx-auto"
+        />
+        <p className="text-gray-600 mb-8">Verify your identity to continue</p>
+        <IDKitWidget
+          app_id="app_b705f9962c72ec01782c091f7646b71a"
+          action="aa"
+          verification_level={VerificationLevel.Device}
+          handleVerify={verifyProof}
+          onSuccess={onSuccess}>
+          {({ open }) => (
+            <button
+              onClick={open}
+              className="bg-gradient-to-r from-[#EF4A75] to-[#FD5564] text-white font-semibold py-3 px-6 rounded-full hover:opacity-90 transition duration-300 ease-in-out transform hover:scale-105 shadow-md"
+            >
+              Verify with World ID
+            </button>
+          )}
+        </IDKitWidget>
+      </div>
     </div>
   );
 }
+
+export default LoginPage;

@@ -1,0 +1,3 @@
+[submodule "coinswipe_backend"]
+	path = coinswipe_backend
+	url = https://github.com/Dymirt/coinswipe_backend.git

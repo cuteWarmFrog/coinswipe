@@ -1,8 +1,11 @@
+"use client";
+
 import Image from "next/image";
 import NavBar from "@/components/nav-bar";
 import CoinCard from "@/components/coin-card";
 
-export default function Home() {
+export default function Home() 
+{
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <main className="flex w-full flex-grow bg-background justify-center items-center">

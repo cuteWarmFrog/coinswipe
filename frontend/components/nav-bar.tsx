@@ -28,11 +28,11 @@ export default function NavBar() {
         <span className="text-xs">Matches</span>
       </Link>
       <Link
-        href="/settings"
+        href="/profile"
         className={`flex flex-col items-center gap-1 text-muted-foreground hover:text-foreground focus:text-foreground flex-1`}
       >
         <SettingsIcon className="w-6 h-6" />
-        <span className="text-xs">Settings</span>
+        <span className="text-xs">Portfolio</span>
       </Link>
     </div>
   );

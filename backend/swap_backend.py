@@ -14,7 +14,7 @@ SEI_ADDRESS = "0xE30feDd158A2e3b13e9badaeABaFc5516e95e8C7"  # SEI token address 
 w3 = Web3(Web3.HTTPProvider(RPC_URL))
 
 # Correct conversion of SEI amount to swap
-SEI_AMOUNT_TO_SWAP = w3.to_wei(5, 'ether')  # Amount of SEI to swap in Wei
+SEI_AMOUNT_TO_SWAP = w3.to_wei(1, 'ether')  # Amount of SEI to swap in Wei
 API_ENDPOINT = "https://sei-api.dragonswap.app/api/v1/quote"  # DragonSwap API endpoint
 
 # Convert addresses to checksum format
@@ -96,9 +96,9 @@ def perform_swap(private_key, memecoin_address, user_address):
     print('Swap successful!', receipt)
 
 # Example usage
-# PRIVATE_KEY = "INSERT_PRIVATE_KEY"
+# PRIVATE_KEY = "PRIVATE_KEY"
 # MEMECOIN_ADDRESS = "0x5f0e07dfee5832faa00c63f2d33a0d79150e8598"
-# USER_ADDRESS = "0xd64a2e1eD2927499ce5A8ac9FbCa3A130BFAa395"
+# USER_ADDRESS = "0x09dec94507b0E0a59D71d724bC627c9bccc99294"
 # perform_swap(PRIVATE_KEY, MEMECOIN_ADDRESS, USER_ADDRESS)
 
 # print(fetch_quote(SEI_AMOUNT_TO_SWAP, MEMECOIN_ADDRESS, USER_ADDRESS))

@@ -56,7 +56,7 @@ def fetch_quote(amount_in, memecoin_address, user_address):
         })
         
         response_data = response.json()
-        return response_data['quote']
+        return response_data['quoteDecimals']
     except Exception as e:
         print("Error fetching quote from DragonSwap API:", e)
         return None
@@ -100,3 +100,5 @@ def perform_swap(private_key, memecoin_address, user_address):
 # MEMECOIN_ADDRESS = "0x5f0e07dfee5832faa00c63f2d33a0d79150e8598"
 # USER_ADDRESS = "0xd64a2e1eD2927499ce5A8ac9FbCa3A130BFAa395"
 # perform_swap(PRIVATE_KEY, MEMECOIN_ADDRESS, USER_ADDRESS)
+
+# print(fetch_quote(SEI_AMOUNT_TO_SWAP, MEMECOIN_ADDRESS, USER_ADDRESS))

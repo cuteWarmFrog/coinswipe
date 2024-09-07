@@ -233,10 +233,10 @@ def sell_memecoin(private_key, memecoin_address, user_address):
     return sei_balance_after
     
 # Example usage
-PRIVATE_KEY = "580c60020c6b03387741374416bd157517401523aaa7f2861013664f6b80355f"
-MEMECOIN_ADDRESS = "0x5f0e07dfee5832faa00c63f2d33a0d79150e8598"
-USER_ADDRESS = "0xd64a2e1eD2927499ce5A8ac9FbCa3A130BFAa395"
-print(get_native_sei_balance(USER_ADDRESS))
+# PRIVATE_KEY = "PK_HERE"
+# MEMECOIN_ADDRESS = "0x5f0e07dfee5832faa00c63f2d33a0d79150e8598"
+# USER_ADDRESS = "0xd64a2e1eD2927499ce5A8ac9FbCa3A130BFAa395"
+# print(get_native_sei_balance(USER_ADDRESS))
 
 
 # print(fetch_quote(SEI_AMOUNT_TO_SWAP, MEMECOIN_ADDRESS, USER_ADDRESS))

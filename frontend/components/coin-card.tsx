@@ -83,7 +83,7 @@ export default function Component(props: Props) {
   return (
     <animated.div {...bind()} style={{ x, rotate }} className="w-full">
       <Card
-        className={`mx-auto max-w-sm  bg-gray-900 rounded-xl shadow-lg p-2`}
+        className={`mx-auto max-w-sm bg-gray-200 dark:bg-slate-900 rounded-xl shadow-lg p-2`}
       >
         <div className="flex items-center">
           <Image src={image} alt={name} width="100" height="100" />

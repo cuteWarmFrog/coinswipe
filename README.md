@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://i.ibb.co/Xtmsyy7/Logo-3.png" />
+  <img src="https://i.postimg.cc/Dfg4fYSw-/Logo-3.png" />
 </p>
 
 # CoinSwipe: Memecoin Swiping & Social Trading App

@@ -23,7 +23,7 @@ export default function SettingsPage() {
     queryKey: ["wallet", TELEGRAM_MOCK_ID],
     queryFn: async () => {
       const response = await fetch(
-        `https://coinswipe.pythonanywhere.com/wallet/profile/${mockId}/`
+        `https://coinswipe.pythonanywhere.com/wallet/profile/${TELEGRAM_MOCK_ID}/`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");

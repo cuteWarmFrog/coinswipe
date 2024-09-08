@@ -9,13 +9,14 @@ type MatchItemProps = {
   name: string;
   image: string;
   link: string;
+  usernameLink?: string;
 };
 
 type MatchListProps = {
   matches: MatchItemProps[];
 };
 
-const MatchItem = ({ name, image, link }: MatchItemProps) => {
+const MatchItem = ({ name, image, link, usernameLink }: MatchItemProps) => {
   const { theme } = useTheme();
   return (
     <div
@@ -32,7 +33,10 @@ const MatchItem = ({ name, image, link }: MatchItemProps) => {
       </div>
       <Link href={link} passHref>
         <Button variant="outline" size="sm" onClick={() => {
-          window.open(link, "_blank");
+          // window.open(link, "_blank");
+
+          // @ts-ignore
+          window?.Telegram?.WebApp?.openTelegramLink(usernameLink)
         }}>
           <MessageCircleIcon className="h-4 w-4" />
         </Button>

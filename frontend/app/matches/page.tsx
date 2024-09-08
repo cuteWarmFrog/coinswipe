@@ -5,7 +5,8 @@ const matchesMOCK = [
   {
     name: "Theire",
     image: "https://github.com/shadcn.png",
-    link: 'tg://user?id=1310536731'
+    link: 'tg://user?id=1310536731',
+    usernameLink: "https://t.me/thierry123454"
   },
 ];
 

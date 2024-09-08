@@ -9,9 +9,11 @@ export default function TelegramSetup() {
       // @ts-ignore
       window?.Telegram?.WebApp?.disableVerticalSwipes();
       // @ts-ignore
-      const userId = window.Telegram.WebApp.initDataUnsafe.user.id;
+      const userId = window?.Telegram?.WebApp?.initDataUnsafe?.user?.id;
 
       console.log("TELEGRAM_USER_ID", userId);
+      // @ts-ignore
+      console.log("initDataUnsafe", window?.Telegram?.WebApp?.initDataUnsafe);
     }
   }, []);
 

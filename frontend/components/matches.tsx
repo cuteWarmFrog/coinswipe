@@ -34,17 +34,7 @@ const MatchItem = ({ name, image, link, usernameLink }: MatchItemProps) => {
     setIsLoading(true);
     let response;
     try {
-      // response = await axios.get(`${HOST}/get_message/${telegramId}/`);
-      response = await new Promise((resolve) => {
-        setTimeout(() => {
-          resolve({
-            data: {
-              message: `Hey fellow meme coin enthusiast! It's great to see someone who shares my passion for INSPECTOR, Popo The Cat, and SEIYAN. Let's get this meme party started!`,
-            },
-          });
-        }, 3000);
-      });
-
+      response = await axios.get(`${HOST}/get_message/${telegramId}/`);
       toast({
         title: "We generated intro for you!",
         description:

@@ -1,22 +1,12 @@
 import React from "react";
 import { MatchList } from "@/components/matches";
-import { useToast } from "@/hooks/use-toast";
-
-const matchesMOCK = [
-  {
-    name: "Thierry",
-    image: "thierry.jpg",
-    link: "tg://user?id=1310536731",
-    usernameLink: "https://t.me/thierry123454",
-  },
-];
 
 export default function MatchesPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-grow p-4">
         <h1 className="text-2xl text-center font-bold mb-4">Matches</h1>
-        <MatchList matches={matchesMOCK} />
+        <MatchList matches={[]} />
       </main>
     </div>
   );

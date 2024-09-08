@@ -18,7 +18,7 @@ export default function NavBar() {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-background border-t z-50 px-4 py-2 flex justify-around items-center">
+    <div className="fixed bottom-0 left-0 right-0 bg-background border-t z-50 px-4 py-2 flex justify-around items-center pb-2">
       <Link
         href="/swipe"
         className={`flex flex-col items-center gap-1 text-muted-foreground hover:text-foreground focus:text-foreground flex-1`}

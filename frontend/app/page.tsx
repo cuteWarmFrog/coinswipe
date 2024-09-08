@@ -17,8 +17,6 @@ const verifyProof = async (proof) => {
   ); // Log the proof from IDKit to the console for visibility
   const data = await verify(proof);
 
-  console.log("data", data);
-
   if (data.success) {
     console.log("Successful response from backend:\n", JSON.stringify(data)); // Log the response from our backend for visibility
   } else {

@@ -3,8 +3,7 @@
 </p>
 
 <h1 align="center">Memecoin Swiping & Social Trading App</h1>
-=======================================================================================================
-<h2 align="center">Made during ETHWarsaw 2024 hackathon</h1>
+<h3 align="center">Made during ETHWarsaw 2024 hackathon</h3>
 
 Project Overview
 ----------------

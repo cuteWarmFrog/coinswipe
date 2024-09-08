@@ -3,13 +3,16 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useBalance } from "wagmi";
-import { formatNumber, HOST, TELEGRAM_MOCK_ID } from "@/lib/utils";
+import { formatNumber, HOST, telegramIdAtom } from "@/lib/utils";
 import { ModeToggle } from "@/components/theme-toggle";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useAtom } from "jotai";
 
 export default function SettingsPage() {
   const [copied, setCopied] = useState(false);
+
+  const [telegramId] = useAtom(telegramIdAtom);
 
   const { data } = useBalance({
     address: "0xd64a2e1eD2927499ce5A8ac9FbCa3A130BFAa395",
@@ -20,10 +23,10 @@ export default function SettingsPage() {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["wallet", TELEGRAM_MOCK_ID],
+    queryKey: ["wallet", telegramId],
     queryFn: async () => {
       const response = await fetch(
-        `${HOST}/wallet/profile/${TELEGRAM_MOCK_ID}/`
+        `${HOST}/wallet/profile/${telegramId}/`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");

@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useAtom } from 'jotai'
+import { telegramIdAtom } from "@/lib/utils";
 
 export default function TelegramSetup() {
-  const [telegramId, setTelegramId] = useState<string | null>(null);
-  const [telegramData, setTelegramData] = useState<any>(null);
-
+  const [telegramId, setTelegramId] = useAtom(telegramIdAtom);
+  
   useEffect(() => {
     // @ts-ignore
     if (window?.Telegram?.WebApp) {
@@ -16,18 +17,14 @@ export default function TelegramSetup() {
       // @ts-ignore
       const initData = window?.Telegram?.WebApp?.initDataUnsafe;
 
-      setTelegramId(userId);
-      setTelegramData(initData);
+      if (userId) {
+        setTelegramId(userId);
+      }
 
       console.log("TELEGRAM_USER_ID", userId);
       console.log("initDataUnsafe", initData);
     }
   }, []);
 
-  return (
-    <div>
-      <p>Telegram ID: {telegramId}</p>
-      <p>Telegram Data: {JSON.stringify(telegramData)}</p>
-    </div>
-  );
+  return null;
 }

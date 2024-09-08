@@ -5,9 +5,10 @@ import { Positions } from "@/components/positions";
 import { useBalance } from "wagmi";
 import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
-import { formatNumber, HOST, TELEGRAM_MOCK_ID } from "@/lib/utils";
+import { formatNumber, HOST, telegramIdAtom } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAtom } from "jotai";
 
 const mockPositions = [
   {
@@ -32,6 +33,8 @@ export default function ProfilePage() {
   const [copied, setCopied] = useState(false);
   const [isClient, setIsClient] = useState(false);
 
+  const [telegramId] = useAtom(telegramIdAtom);
+
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -41,10 +44,10 @@ export default function ProfilePage() {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["wallet", TELEGRAM_MOCK_ID],
+    queryKey: ["wallet", telegramId],
     queryFn: async () => {
       const response = await fetch(
-        `${HOST}/wallet/profile/${TELEGRAM_MOCK_ID}/`
+        `${HOST}/wallet/profile/${telegramId}/`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -65,7 +68,7 @@ export default function ProfilePage() {
     queryKey: ["positions"],
     queryFn: async () => {
       const response = await fetch(
-        `${HOST}/wallet/tokens/${TELEGRAM_MOCK_ID}/`
+        `${HOST}/wallet/tokens/${telegramId}/`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");

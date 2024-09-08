@@ -20,8 +20,9 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { formatNumber, HOST, TELEGRAM_MOCK_ID } from "@/lib/utils";
+import { formatNumber, HOST, telegramIdAtom } from "@/lib/utils";
 import axios from "axios";
+import { useAtom } from "jotai";
 
 ChartJS.register(
   CategoryScale,
@@ -52,6 +53,8 @@ type Props = {
 export default function Component(props: Props) {
   const { name, symbol, changeToken, address, price, liquidity, change } =
     props;
+
+  const [telegramId] = useAtom(telegramIdAtom);
   const [gone, setGone] = useState(false);
   const dragRef = useRef<number>(0);
   const prevSymbolRef = useRef<string>(symbol);
@@ -179,7 +182,7 @@ export default function Component(props: Props) {
     mutationFn: async () => {
       const response = await axios.post(`${HOST}/perform_swap`, {
         memecoin_address: address,
-        telegram_id: TELEGRAM_MOCK_ID,
+        telegram_id: telegramId,
       });
       return response.data;
     },
@@ -197,7 +200,7 @@ export default function Component(props: Props) {
   const onBuy = () => {
     axios.post(`${HOST}/perform_swap/`, {
       memecoin_address: address,
-      telegram_id: TELEGRAM_MOCK_ID,
+      telegram_id: telegramId,
     });
     animateSwipe(1);
   };

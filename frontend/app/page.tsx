@@ -28,7 +28,7 @@ const LoginPage = () => {
   const router = useRouter();
 
   const onSuccess = () => {
-    router.push("/profile");
+    router.push("/portfolio");
   };
 
   return (

@@ -3,17 +3,19 @@
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
+import Link from "next/link";
 
 type MatchItemProps = {
   name: string;
   image: string;
+  link: string;
 };
 
 type MatchListProps = {
   matches: MatchItemProps[];
 };
 
-const MatchItem = ({ name, image }: MatchItemProps) => {
+const MatchItem = ({ name, image, link }: MatchItemProps) => {
   const { theme } = useTheme();
   return (
     <div
@@ -28,9 +30,11 @@ const MatchItem = ({ name, image }: MatchItemProps) => {
       <div className="flex-1">
         <div className="font-medium">{name}</div>
       </div>
-      <Button variant="outline" size="sm">
-        <MessageCircleIcon className="h-4 w-4" />
-      </Button>
+      <Link href={link} passHref>
+        <Button variant="outline" size="sm">
+          <MessageCircleIcon className="h-4 w-4" />
+        </Button>
+      </Link>
     </div>
   );
 };

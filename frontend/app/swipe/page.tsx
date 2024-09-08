@@ -30,7 +30,7 @@ export default function Home() {
       const tokens = data.tokens;
       // sort tokens by liquidity
       tokens.sort((a: any, b: any) => b.liquidity - a.liquidity);
-      return tokens;
+      return tokens.slice(4);
     },
   });
 

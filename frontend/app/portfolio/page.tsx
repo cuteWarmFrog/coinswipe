@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Positions } from "@/components/positions";
 import { useBalance } from "wagmi";
 import { useQuery } from "@tanstack/react-query";
@@ -10,30 +10,33 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAtom } from "jotai";
 
-const mockPositions = [
-  {
-    token: "Bitcoin",
-    symbol: "BTC",
-    amount: 0.5,
-    price: 50000,
-    profitLoss: 5000,
-  },
-  {
-    token: "Ethereum",
-    symbol: "ETH",
-    amount: 2,
-    price: 2500,
-    profitLoss: -500,
-  },
-  { token: "Solana", symbol: "SOL", amount: 10, price: 35, profitLoss: 150 },
-  { token: "Chainlink", symbol: "LINK", amount: 25, price: 8, profitLoss: -50 },
-];
 
 export default function ProfilePage() {
   const [copied, setCopied] = useState(false);
   const [isClient, setIsClient] = useState(false);
 
   const [telegramId] = useAtom(telegramIdAtom);
+
+  const {
+    data: tokens = [],
+    isLoading: tokensLoading,
+    error: tokensError,
+  } = useQuery({
+    queryKey: ["tokens"],
+    queryFn: async () => {
+      const response = await fetch(
+        "https://sei-api.dragonswap.app/api/v1/tokens"
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      const tokens = data.tokens;
+      // sort tokens by liquidity
+      tokens.sort((a: any, b: any) => b.liquidity - a.liquidity);
+      return tokens;
+    },
+  });
 
   useEffect(() => {
     setIsClient(true);
@@ -46,9 +49,7 @@ export default function ProfilePage() {
   } = useQuery({
     queryKey: ["wallet", telegramId],
     queryFn: async () => {
-      const response = await fetch(
-        `${HOST}/wallet/profile/${telegramId}/`
-      );
+      const response = await fetch(`${HOST}/wallet/profile/${telegramId}/`);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -64,12 +65,10 @@ export default function ProfilePage() {
     },
   });
 
-  const { data: positions, isLoading: tokensLoading } = useQuery({
+  const { data: positions, isLoading: positionsLoading } = useQuery({
     queryKey: ["positions"],
     queryFn: async () => {
-      const response = await fetch(
-        `${HOST}/wallet/tokens/${telegramId}/`
-      );
+      const response = await fetch(`${HOST}/wallet/tokens/${telegramId}/`);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -78,6 +77,27 @@ export default function ProfilePage() {
   });
 
   console.log("positions", positions);
+
+  const positionsToRender = useMemo(() => {
+    if (positionsLoading || tokensLoading || !positions || !tokens) return [];
+
+    return positions
+      .map((position: any) => {
+        const token = tokens.find(
+          (token: any) => token.symbol === position["coin__symbol"]
+        );
+        if (!token) return null;
+
+        return {
+          ...token,
+          price: token["usd_price"],
+          amount: position["total_amount"],
+          // profitLoss: position.price - token.price,
+        };
+      });
+  }, [positions, tokens, positionsLoading, tokensLoading]);
+
+  console.log("positionsToRender", positionsToRender);
 
   const handleCopyClick = () => {
     if (wallet && wallet.address) {
@@ -150,7 +170,7 @@ export default function ProfilePage() {
             </div>
           </Card>
         </div>
-        <Positions positions={mockPositions} />
+        <Positions positions={positionsToRender} />
       </main>
     </div>
   );

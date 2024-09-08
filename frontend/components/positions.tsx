@@ -16,7 +16,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -26,48 +26,84 @@ import {
   DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { useBalance } from "wagmi";
+import { HOST, telegramIdAtom } from "@/lib/utils";
+import axios from "axios";
+import { useAtom } from "jotai";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 type Position = {
-  token: string;
+  address: string;
+  name: string;
   symbol: string;
   amount: number;
+  decimals: number;
   price: number;
-  profitLoss: number;
 };
 
 const PositionRow = ({ position }: { position: Position }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+  const [telegramId] = useAtom(telegramIdAtom);
+
+  const queryClient = useQueryClient();
+
+  const {
+    data: wallet,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["wallet", telegramId],
+    queryFn: async () => {
+      const response = await fetch(`${HOST}/wallet/profile/${telegramId}/`);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    },
+  });
+
+  const { data } = useBalance({
+    address: wallet?.address as `0x${string}`,
+    token: position.address as `0x${string}`,
+  });
+
+  const sell = useCallback(async () => {
+    axios.post(`${HOST}/sell_memecoin/`, {
+      memecoin_address: position.address,
+      telegram_id: telegramId,
+    });
+
+    setTimeout(() => {
+      queryClient.invalidateQueries({ queryKey: ["positions"] });
+      console.log("invalidated positions");
+    }, 10000);
+  }, []);
+
+  if (data?.formatted === "0") {
+    return null;
+  }
+
   return (
     <TableRow>
       <TableCell>
-        <div className="font-medium">{position.token}</div>
+        <div className="font-medium">{position.name}</div>
         <div className="text-muted-foreground text-sm">{position.symbol}</div>
       </TableCell>
-      <TableCell>{position.amount}</TableCell>
-      <TableCell>${position.price.toLocaleString()}</TableCell>
-      <TableCell>
-        <div
-          className={`${
-            position.profitLoss >= 0 ? "text-green-500" : "text-red-500"
-          } font-medium`}
-        >
-          {position.profitLoss >= 0 ? "+" : "-"}$
-          {Math.abs(position.profitLoss).toLocaleString()}
-        </div>
-      </TableCell>
+      <TableCell>{Number(data?.formatted).toFixed(4)}</TableCell>
+      <TableCell>${Number(position.price).toFixed(5)}</TableCell>
       <TableCell>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <XIcon className="h-4 w-4" />
+            <Button variant="outline" size="icon">
+              Sell
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Close Position</DialogTitle>
               <DialogDescription>
-                Are you sure you want to close your {position.token} position?
+                Are you sure you want to close your {position.name} position?
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
@@ -76,7 +112,7 @@ const PositionRow = ({ position }: { position: Position }) => {
               </Button>
               <Button
                 onClick={() => {
-                  // Handle closing position here
+                  sell();
                   setIsDialogOpen(false);
                 }}
               >
@@ -105,7 +141,6 @@ export function Positions({ positions }: { positions: Position[] }) {
             <TableHead>Token</TableHead>
             <TableHead>Size</TableHead>
             <TableHead>Price</TableHead>
-            <TableHead>P/L</TableHead>
             <TableHead />
           </TableRow>
         </TableHeader>

@@ -178,25 +178,6 @@ export default function Component(props: Props) {
   );
   const formattedLiquidity = formatNumber(liquidity);
 
-  const buyMutation = useMutation({
-    mutationFn: async () => {
-      const response = await axios.post(`${HOST}/perform_swap`, {
-        memecoin_address: address,
-        telegram_id: telegramId,
-      });
-      return response.data;
-    },
-    onSuccess: () => {
-      buyMutation.mutate();
-      console.log("Buy successful");
-      // animateSwipe(1);
-    },
-    onError: (error) => {
-      console.error("Buy failed", error);
-      // Optionally handle the error case
-    },
-  });
-
   const onBuy = () => {
     axios.post(`${HOST}/perform_swap/`, {
       memecoin_address: address,
@@ -313,9 +294,8 @@ export default function Component(props: Props) {
               onClick={onBuy}
               variant="default"
               className="bg-green-500 hover:bg-green-600"
-              disabled={buyMutation.isPending}
             >
-              {buyMutation.isPending ? "Buying..." : "Buy"}
+              Buy
             </Button>
           </div>
         </CardContent>

@@ -3,20 +3,9 @@ import { MatchList } from "@/components/matches";
 
 const matchesMOCK = [
   {
-    name: "John Doe",
+    name: "Theire",
     image: "https://github.com/shadcn.png",
-  },
-  {
-    name: "Jane Smith",
-    image: "https://github.com/shadcn.png",
-  },
-  {
-    name: "Alice Johnson",
-    image: "https://github.com/shadcn.png",
-  },
-  {
-    name: "Bob Williams",
-    image: "https://github.com/shadcn.png",
+    link: 'tg://user?id=1310536731'
   },
 ];
 

@@ -2,8 +2,6 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { atom } from "jotai";
 
-export const telegramIdAtom = atom(null);
-
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -30,8 +28,10 @@ export const formatNumber = (num: number | string): string => {
   }
 };
 
-// export const TELEGRAM_MOCK_ID = "228developer";
+export const TELEGRAM_MOCK_ID = "developer";
 
 // const DEV_HOST = "http://127.0.0.1:8000";
 // export const HOST = 'https://coinswipe.pythonanywhere.com';
 export const HOST = "https://coinswipe.pythonanywhere.com";
+
+export const telegramIdAtom = atom(TELEGRAM_MOCK_ID);

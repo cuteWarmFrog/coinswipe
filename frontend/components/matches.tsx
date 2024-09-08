@@ -117,6 +117,12 @@ export function MatchList({ matches }: MatchListProps) {
         {matches.map((match, index) => (
           <MatchItem key={index} {...match} />
         ))}
+        {matches.length === 0 && (
+            <>
+              <p className="text-center text-gray-500">No matches found yet</p>
+              <p className="text-center text-gray-500">How about you swap some more memes?</p>
+            </>
+        )}
       </div>
     </div>
   );
@@ -124,10 +130,10 @@ export function MatchList({ matches }: MatchListProps) {
 
 function MessageCircleIcon(props) {
   return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
+      <svg
+          {...props}
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
       height="24"
       viewBox="0 0 24 24"
       fill="none"

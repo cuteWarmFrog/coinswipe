@@ -2,10 +2,8 @@
   <img src="https://i.postimg.cc/Dfg4fYSw-/Logo-3.png" />
 </p>
 
-# CoinSwipe: Memecoin Swiping & Social Trading App
-================================================
-
-**Made during ETHWarsaw 2024 hackathon**
+<h1 align="center">Memecoin Trading & Social App</h1>
+<h3 align="center">Made during ETHWarsaw 2024 hackathon</h3>
 
 Project Overview
 ----------------
@@ -19,6 +17,7 @@ CoinSwipe is a Telegram-based application that gamifies memecoin trading by inco
     -   Users are presented with cards containing information about specific memecoins, including the name, picture, and market statistics.
     -   Users swipe right to buy or left to skip.
     -   Swiping right automatically buys 5 SEI worth of the selected memecoin via DragonSwap.
+    -   There is no signing involved as we utilize an embedded wallet, improving UX.
 2.  **Portfolio Management**
 
     -   Users can view their portfolio, which shows the SEI address to which they need to send funds and the memecoins they own.

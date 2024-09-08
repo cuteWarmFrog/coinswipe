@@ -59,7 +59,7 @@ Team Members
 
 -   **Thierry Blankenstein**
 -   **Dmytro Kolida**
--   **Victor Livshits**
+-   **Viktor Livshits**
 
 Links
 -----

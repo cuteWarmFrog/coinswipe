@@ -65,4 +65,4 @@ Links
 -----
 
 -   **Presentation Slides**: [Link to Presentation Slides](https://docs.google.com/presentation/d/1I0YFVhDkDUwdWBmEve92BkDd5m8GAA3y1yNUJXHbiPw/edit?usp=sharing)
--   **Demo Video**: [Link to Demo Video]
+-   **Demo Video**: [Link to Demo Video](https://www.youtube.com/watch?v=6MDAiJexr8k)

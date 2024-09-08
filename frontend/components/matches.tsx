@@ -31,7 +31,9 @@ const MatchItem = ({ name, image, link }: MatchItemProps) => {
         <div className="font-medium">{name}</div>
       </div>
       <Link href={link} passHref>
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" onClick={() => {
+          window.open(link, "_blank");
+        }}>
           <MessageCircleIcon className="h-4 w-4" />
         </Button>
       </Link>

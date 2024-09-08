@@ -61,6 +61,21 @@ export default function ProfilePage() {
     },
   });
 
+  const { data: positions, isLoading: tokensLoading } = useQuery({
+    queryKey: ["positions"],
+    queryFn: async () => {
+      const response = await fetch(
+        `${HOST}/wallet/tokens/${TELEGRAM_MOCK_ID}/`
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    },
+  });
+
+  console.log("positions", positions);
+
   const handleCopyClick = () => {
     if (wallet && wallet.address) {
       navigator.clipboard.writeText(wallet.address);

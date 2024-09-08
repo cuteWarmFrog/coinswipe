@@ -1,8 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function TelegramSetup() {
+  const [telegramId, setTelegramId] = useState<string | null>(null);
+  const [telegramData, setTelegramData] = useState<any>(null);
+
   useEffect(() => {
     // @ts-ignore
     if (window?.Telegram?.WebApp) {
@@ -10,12 +13,21 @@ export default function TelegramSetup() {
       window?.Telegram?.WebApp?.disableVerticalSwipes();
       // @ts-ignore
       const userId = window?.Telegram?.WebApp?.initDataUnsafe?.user?.id;
+      // @ts-ignore
+      const initData = window?.Telegram?.WebApp?.initDataUnsafe;
+
+      setTelegramId(userId);
+      setTelegramData(initData);
 
       console.log("TELEGRAM_USER_ID", userId);
-      // @ts-ignore
-      console.log("initDataUnsafe", window?.Telegram?.WebApp?.initDataUnsafe);
+      console.log("initDataUnsafe", initData);
     }
   }, []);
 
-  return null;
+  return (
+    <div>
+      <p>Telegram ID: {telegramId}</p>
+      <p>Telegram Data: {JSON.stringify(telegramData)}</p>
+    </div>
+  );
 }

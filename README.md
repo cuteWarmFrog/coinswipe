@@ -2,7 +2,7 @@
   <img src="https://i.postimg.cc/Dfg4fYSw-/Logo-3.png" />
 </p>
 
-# CoinSwipe: Memecoin Swiping & Social Trading App
+<h1 align="center">Memecoin Swiping & Social Trading App</h1>
 ================================================
 
 **Made during ETHWarsaw 2024 hackathon**

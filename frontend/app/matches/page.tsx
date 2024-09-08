@@ -1,5 +1,4 @@
 import React from "react";
-import NavBar from "@/components/nav-bar";
 import { MatchList } from "@/components/matches";
 
 const matchesMOCK = [
@@ -28,7 +27,6 @@ export default function MatchesPage() {
         <h1 className="text-2xl text-center font-bold mb-4">Matches</h1>
         <MatchList matches={matchesMOCK} />
       </main>
-      <NavBar />
     </div>
   );
 }

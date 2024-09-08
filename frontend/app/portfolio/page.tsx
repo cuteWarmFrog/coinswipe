@@ -1,19 +1,40 @@
 "use client";
 
-import React, { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import React, { useState, useEffect } from "react";
+import { Positions } from "@/components/positions";
 import { useBalance } from "wagmi";
-import { formatNumber, TELEGRAM_MOCK_ID } from "@/lib/utils";
-import { ModeToggle } from "@/components/theme-toggle";
+import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
+import { formatNumber, TELEGRAM_MOCK_ID } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export default function SettingsPage() {
+const mockPositions = [
+  {
+    token: "Bitcoin",
+    symbol: "BTC",
+    amount: 0.5,
+    price: 50000,
+    profitLoss: 5000,
+  },
+  {
+    token: "Ethereum",
+    symbol: "ETH",
+    amount: 2,
+    price: 2500,
+    profitLoss: -500,
+  },
+  { token: "Solana", symbol: "SOL", amount: 10, price: 35, profitLoss: 150 },
+  { token: "Chainlink", symbol: "LINK", amount: 25, price: 8, profitLoss: -50 },
+];
+
+export default function ProfilePage() {
   const [copied, setCopied] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
-  const { data } = useBalance({
-    address: "0xd64a2e1eD2927499ce5A8ac9FbCa3A130BFAa395",
-  });
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const {
     data: wallet,
@@ -23,7 +44,7 @@ export default function SettingsPage() {
     queryKey: ["wallet", TELEGRAM_MOCK_ID],
     queryFn: async () => {
       const response = await fetch(
-        `https://coinswipe.pythonanywhere.com/wallet/profile/${mockId}/`
+        `https://coinswipe.pythonanywhere.com/wallet/profile/${TELEGRAM_MOCK_ID}/`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -32,23 +53,33 @@ export default function SettingsPage() {
     },
   });
 
+  const { data } = useBalance({
+    address: wallet?.address,
+    query: {
+      structuralSharing: false,
+      refetchInterval: 5000,
+    },
+  });
+
   const handleCopyClick = () => {
-    navigator.clipboard.writeText(wallet.address);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    if (wallet && wallet.address) {
+      navigator.clipboard.writeText(wallet.address);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
+  if (!isClient) {
+    return null; // or a loading spinner
+  }
+
   return (
-    <div className="flex flex-col min-h-screen p-4">
-      <div className="relative">
-        <h1 className="text-2xl text-center font-bold mb-4">Settings</h1>
-        <div className="absolute top-0 right-2">
-          <ModeToggle />
+    <div className="flex flex-col min-h-screen">
+      <main className="flex-grow p-4 mb-4">
+        <div className="relative">
+          <h1 className="text-2xl text-center font-bold">Portfolio</h1>
         </div>
-      </div>
-      <main className="flex-grow mt-4 items-center flex flex-col">
-        {isLoading && <div>Loading...</div>}
-        {wallet && !isLoading && (
+        <div className="flex-grow mt-4 items-center flex flex-col mb-4">
           <Card className="w-full max-w-md p-6 grid gap-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
@@ -56,9 +87,13 @@ export default function SettingsPage() {
                   <CoinsIcon className="w-6 h-6 text-primary-foreground" />
                 </div>
                 <div>
-                  <p className="text-xl font-semibold">
-                    {data && `${formatNumber(data?.formatted)} ${data.symbol}`}
-                  </p>
+                  {data ? (
+                    <p className="text-xl font-semibold">
+                      {`${formatNumber(data?.formatted)} ${data.symbol}`}
+                    </p>
+                  ) : (
+                    <Skeleton className="w-30 h-6" />
+                  )}
                   <p className="text-muted-foreground text-sm">
                     Current Balance
                   </p>
@@ -66,7 +101,12 @@ export default function SettingsPage() {
               </div>
               <div className="flex items-center gap-2">
                 <div className="text-muted-foreground text-sm">
-                  {wallet.address.slice(0, 4)}...{wallet.address.slice(-4)}
+                  {wallet && wallet?.address && (
+                    <p>
+                      {wallet.address.slice(0, 4)}...{wallet.address.slice(-4)}
+                    </p>
+                  )}
+                  {!wallet && <Skeleton className="w-10 h-6" />}
                 </div>
                 <Button
                   variant="outline"
@@ -91,7 +131,8 @@ export default function SettingsPage() {
               Feel free to send some SEI here :)
             </div>
           </Card>
-        )}
+        </div>
+        <Positions positions={mockPositions} />
       </main>
     </div>
   );

@@ -1,36 +1,68 @@
 "use client";
 
-import Image from "next/image";
-import NavBar from "@/components/nav-bar";
 import CoinCard from "@/components/coin-card";
-import { useEffect } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+
+type Token = {
+  name: string;
+  symbol: string;
+  address: string;
+};
 
 export default function Home() {
-  //fetch data from api
-  //https://sei-api.dragonswap.app/api/v1/tokens/0xC6BC81A0E287cC8103cC002147a9d76caE4cD6E5/stats
-  useEffect(() => {
-    (async () => {
-      const data = await fetch(
-        "https://sei-api.dragonswap.app/api/v1/tokens/0xC6BC81A0E287cC8103cC002147a9d76caE4cD6E5/stats"
+  const [tokenIndex, setTokenIndex] = useState(0);
+
+  const {
+    data: tokens = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["tokens"],
+    queryFn: async () => {
+      const response = await fetch(
+        "https://sei-api.dragonswap.app/api/v1/tokens"
       );
-      const json = await data.json();
-      console.log(json);
-    })();
-  }, []);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      const tokens = data.tokens;
+      // sort tokens by liquidity
+      tokens.sort((a: any, b: any) => b.liquidity - a.liquidity);
+      return tokens;
+    },
+  });
+
+  const changeToken = () => {
+    setTokenIndex((prevIndex) => (prevIndex + 1) % tokens.length);
+  };
+
+  const token = tokens[tokenIndex];
+
+  const price = token?.["usd_price"] ?? 0;
+  const volume = token?.["daily_volume"] ?? 0;
+  const liquidity = token?.liquidity ?? 0;
+  const change = token?.change;
+
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex w-full flex-grow bg-background justify-center items-center">
-        <CoinCard
-          name="Bitcoin"
-          symbol="BTC"
-          price={100000}
-          fdv={100000000}
-          volume={100000000}
-          liquidity={100000000}
-          image="https://assets.coingecko.com/coins/images/1/large/bitcoin.png?1696501400"
-        />
+        {tokens.length > 0 && (
+          <CoinCard
+            key={tokens[tokenIndex].symbol}
+            address={tokens[tokenIndex].address}
+            changeToken={changeToken}
+            name={tokens[tokenIndex].name}
+            symbol={tokens[tokenIndex].symbol}
+            price={price}
+            volume={volume}
+            liquidity={liquidity}
+            change={change}
+          />
+        )}
+        {isLoading && <div>Loading...</div>}
       </main>
-      <NavBar />
     </div>
   );
 }

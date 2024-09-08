@@ -1,11 +1,13 @@
-"use client"
+"use client";
 
 import React from "react";
 import NavBar from "@/components/nav-bar";
 import { MatchList } from "@/components/matches";
-import { IDKitWidget, VerificationLevel } from '@worldcoin/idkit'
+import { IDKitWidget, VerificationLevel } from "@worldcoin/idkit";
 import { verify } from "./actions/verify";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 // TODO: Calls your implemented server route
 const verifyProof = async (proof) => {
@@ -24,20 +26,19 @@ const verifyProof = async (proof) => {
   }
 };
 
-
 const LoginPage = () => {
   const router = useRouter();
 
   const onSuccess = () => {
-    router.push('/swipe');
+    router.push("/swipe");
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-[#171717] to-[#414141]">
       <div className="bg-white p-8 rounded-xl shadow-2xl text-center max-w-md">
-      <img 
-          src="coinswipe_logo.svg" 
-          alt="Welcome" 
+        <img
+          src="coinswipe_logo.svg"
+          alt="Welcome"
           className="w-64 h-auto mb-6 mx-auto"
         />
         <p className="text-gray-600 mb-8">Verify your identity to continue</p>
@@ -46,7 +47,8 @@ const LoginPage = () => {
           action="aa"
           verification_level={VerificationLevel.Device}
           handleVerify={verifyProof}
-          onSuccess={onSuccess}>
+          onSuccess={onSuccess}
+        >
           {({ open }) => (
             <button
               onClick={open}
@@ -57,8 +59,11 @@ const LoginPage = () => {
           )}
         </IDKitWidget>
       </div>
+      <Button variant="ghost">
+        <Link href="/swipe">Skip</Link>
+      </Button>
     </div>
   );
-}
+};
 
 export default LoginPage;

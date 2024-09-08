@@ -3,13 +3,35 @@
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useSpring, animated } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
-import { useTheme } from "next-themes";
 import { Skeleton } from "./ui/skeleton";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import web3 from "web3";
+import { Line } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { formatNumber, TELEGRAM_MOCK_ID } from "@/lib/utils";
+import axios from "axios";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 type Props = {
   name: string;
@@ -18,7 +40,6 @@ type Props = {
   price: number;
   liquidity: number;
   volume: number;
-  // image: string;
   changeToken: () => void;
   change: {
     hourly: number;
@@ -26,16 +47,6 @@ type Props = {
     weekly: number;
     monthly: number;
   };
-};
-
-const formatNumber = (num: number): string => {
-  if (num >= 1000000) {
-    return (num / 1000000).toFixed(1) + "M";
-  } else if (num >= 1000) {
-    return (num / 1000).toFixed(1) + "K";
-  } else {
-    return num.toFixed(2);
-  }
 };
 
 export default function Component(props: Props) {
@@ -51,28 +62,71 @@ export default function Component(props: Props) {
   }));
 
   const {
-    data: volume,
+    data: tokenStats,
     isLoading: volumeIsLoading,
     error,
   } = useQuery({
     queryKey: ["tokenData", address],
     queryFn: async () => {
-      const response = await fetch(
+      const response = await axios.get(
         `https://sei-api.dragonswap.app/api/v1/tokens/${address}/stats`
       );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data = await response.json();
-      const daily = data.stats.daily;
-      const last = daily[daily.length - 1];
-      return last["daily_volume"];
+      return response.data;
     },
   });
 
+  const volume = useMemo(() => {
+    if (!tokenStats) return 0;
+
+    const daily = tokenStats?.stats?.daily;
+    const last = daily[daily.length - 1];
+    return last["daily_volume"];
+  }, [tokenStats]);
+
+  const pricesForLast30Days = useMemo(() => {
+    if (!tokenStats) return [];
+
+    const prices = tokenStats?.stats?.daily;
+    return prices.slice(-30).map((el) => el["usd_price"]);
+  }, [tokenStats]);
+
+  const chartData = {
+    labels: pricesForLast30Days.map((_, index) => `${index + 1}`),
+    datasets: [
+      {
+        label: "Price",
+        data: pricesForLast30Days,
+        fill: false,
+        borderColor:
+          pricesForLast30Days[pricesForLast30Days.length - 1] >
+          pricesForLast30Days[0]
+            ? "rgb(0, 255, 0)"
+            : "rgb(255, 0, 0)",
+        tension: 0.1,
+      },
+    ],
+  };
+
+  const chartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      title: {
+        display: true,
+        text: "30 Day Price History",
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: false,
+      },
+    },
+  };
+
   useEffect(() => {
     if (prevSymbolRef.current !== symbol) {
-      // Reset to default state
       api.start({ x: 0, rotate: 0 });
       setGone(false);
       dragRef.current = 0;
@@ -96,17 +150,14 @@ export default function Component(props: Props) {
     ({ down, movement: [mx], direction: [xDir], velocity: [vx] }) => {
       dragRef.current = mx;
       if (down) {
-        // Only update x position while dragging
         api.start({ x: mx, immediate: true });
       } else {
         const trigger = Math.abs(vx) > 0.3;
         const dir = xDir < 0 ? -1 : 1;
         if (trigger) {
-          // Handle swipe action (e.g., skip or buy)
           console.log(dir === 1 ? "Swiped right (Buy)" : "Swiped left (Skip)");
           animateSwipe(dir);
         } else {
-          // Return to center if not triggered
           api.start({
             x: 0,
             rotate: 0,
@@ -124,9 +175,36 @@ export default function Component(props: Props) {
   );
   const formattedLiquidity = formatNumber(liquidity);
 
+  const buyMutation = useMutation({
+    mutationFn: async () => {
+      const response = await axios.post(
+        "https://coinswipe.pythonanywhere.com/perform_swap",
+        {
+          memecoin_address: address,
+          telegram_id: TELEGRAM_MOCK_ID,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      console.log("Buy successful");
+      // animateSwipe(1);
+    },
+    onError: (error) => {
+      console.error("Buy failed", error);
+      // Optionally handle the error case
+    },
+  });
+
   const onBuy = () => {
+    buyMutation.mutate();
     animateSwipe(1);
-    console.log("Buy");
   };
 
   const onSkip = () => {
@@ -139,16 +217,16 @@ export default function Component(props: Props) {
       <Card
         className={`mx-auto max-w-sm bg-gray-200 dark:bg-slate-900 rounded-xl shadow-lg p-2`}
       >
-        <div className="flex items-center">
-          <div className="relative w-[78px] h-[78px]">
+        <div className="flex flex-col justify-center items-center mb-4">
+          <div className="w-[128px] h-[128px] ml-2 mt-2 mb-4">
             {address ? (
               <Image
                 src={`https://dzyb4dm7r8k8w.cloudfront.net/prod/logos/${web3.utils.toChecksumAddress(
                   address
                 )}/logo.png`}
                 alt={name}
-                width={78}
-                height={78}
+                width={128}
+                height={128}
                 placeholder="blur"
                 blurDataURL={`https://dzyb4dm7r8k8w.cloudfront.net/prod/logos/${web3.utils.toChecksumAddress(
                   address
@@ -158,9 +236,9 @@ export default function Component(props: Props) {
               <Skeleton className="w-[100px] h-[100px] rounded-full" />
             )}
           </div>
-          <div className="w-full justify-center">
-            <h3 className="text-center text-xl font-semibold">{name}</h3>
-            <p className="mx-auto bg-muted w-fit px-1 rounded text-center text-muted-foreground text-sm">
+          <div className="flex items-center justify-center">
+            <h3 className="text-center text-2xl font-semibold">{name}</h3>
+            <p className="bg-muted w-fit px-1 rounded text-muted-foreground text-base">
               ${symbol}
             </p>
           </div>
@@ -226,6 +304,9 @@ export default function Component(props: Props) {
               </p>
             </div>
           </div>
+          <div className="w-full h-40">
+            <Line data={chartData} options={chartOptions} />
+          </div>
           <div className="flex justify-between mt-4">
             <Button onClick={onSkip} variant="destructive">
               Skip
@@ -234,8 +315,9 @@ export default function Component(props: Props) {
               onClick={onBuy}
               variant="default"
               className="bg-green-500 hover:bg-green-600"
+              disabled={buyMutation.isPending}
             >
-              Buy
+              {buyMutation.isPending ? "Buying..." : "Buy"}
             </Button>
           </div>
         </CardContent>

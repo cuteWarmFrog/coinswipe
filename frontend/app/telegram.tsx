@@ -6,7 +6,7 @@ import { telegramIdAtom } from "@/lib/utils";
 
 export default function TelegramSetup() {
   const [telegramId, setTelegramId] = useAtom(telegramIdAtom);
-  
+
   useEffect(() => {
     // @ts-ignore
     if (window?.Telegram?.WebApp) {
@@ -26,5 +26,9 @@ export default function TelegramSetup() {
     }
   }, []);
 
-  return null;
+  return (
+      <div>
+        <p>Telegram ID: {telegramId}</p>
+      </div>
+  );
 }

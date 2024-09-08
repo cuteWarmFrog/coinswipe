@@ -64,5 +64,5 @@ Team Members
 Links
 -----
 
--   **Presentation Slides**: [Link to Presentation Slides]
+-   **Presentation Slides**: [Link to Presentation Slides](https://docs.google.com/presentation/d/1I0YFVhDkDUwdWBmEve92BkDd5m8GAA3y1yNUJXHbiPw/edit?usp=sharing)
 -   **Demo Video**: [Link to Demo Video]

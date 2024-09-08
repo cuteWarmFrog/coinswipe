@@ -27,5 +27,8 @@ export const formatNumber = (num: number | string): string => {
   }
 };
 
+export const TELEGRAM_MOCK_ID = "developer";
 
-export const TELEGRAM_MOCK_ID = 'developer';
+// const DEV_HOST = "http://127.0.0.1:8000";
+// export const HOST = 'https://coinswipe.pythonanywhere.com';
+export const HOST = "https://coinswipe.pythonanywhere.com";

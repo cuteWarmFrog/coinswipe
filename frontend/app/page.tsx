@@ -32,7 +32,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-[#171717] to-[#414141]">
+    <div className="flex flex-col items-center justify-center min-h-screen">
       <div className="bg-white p-8 rounded-xl shadow-2xl text-center max-w-md">
         <img
           src="coinswipe_logo.svg"

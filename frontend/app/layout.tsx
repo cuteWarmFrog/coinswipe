@@ -4,6 +4,8 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import QueryProvider from "@/app/query-provider";
 import NavBar from "@/components/nav-bar";
+import Script from "next/script";
+import TelegramSetup from "./telegram";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -27,8 +29,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+      <head>
+        <Script
+          src="https://telegram.org/js/telegram-web-app.js"
+          strategy="beforeInteractive"
+        />
+      </head>
+      <body className="font-sans">
         <QueryProvider>
           <ThemeProvider
             attribute="class"
@@ -36,6 +44,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
+            <TelegramSetup />
             {children}
             <NavBar />
           </ThemeProvider>

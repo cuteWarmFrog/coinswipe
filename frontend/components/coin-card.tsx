@@ -20,7 +20,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { formatNumber, TELEGRAM_MOCK_ID } from "@/lib/utils";
+import { formatNumber, HOST, TELEGRAM_MOCK_ID } from "@/lib/utils";
 import axios from "axios";
 
 ChartJS.register(
@@ -177,22 +177,14 @@ export default function Component(props: Props) {
 
   const buyMutation = useMutation({
     mutationFn: async () => {
-      const response = await axios.post(
-        "https://coinswipe.pythonanywhere.com/perform_swap",
-        {
-          memecoin_address: address,
-          telegram_id: TELEGRAM_MOCK_ID,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          },
-        }
-      );
+      const response = await axios.post(`${HOST}/perform_swap`, {
+        memecoin_address: address,
+        telegram_id: TELEGRAM_MOCK_ID,
+      });
       return response.data;
     },
     onSuccess: () => {
+      buyMutation.mutate();
       console.log("Buy successful");
       // animateSwipe(1);
     },
@@ -203,7 +195,10 @@ export default function Component(props: Props) {
   });
 
   const onBuy = () => {
-    buyMutation.mutate();
+    axios.post(`${HOST}/perform_swap/`, {
+      memecoin_address: address,
+      telegram_id: TELEGRAM_MOCK_ID,
+    });
     animateSwipe(1);
   };
 

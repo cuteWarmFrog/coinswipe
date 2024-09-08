@@ -5,7 +5,7 @@ import { Positions } from "@/components/positions";
 import { useBalance } from "wagmi";
 import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
-import { formatNumber, TELEGRAM_MOCK_ID } from "@/lib/utils";
+import { formatNumber, HOST, TELEGRAM_MOCK_ID } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -44,7 +44,7 @@ export default function ProfilePage() {
     queryKey: ["wallet", TELEGRAM_MOCK_ID],
     queryFn: async () => {
       const response = await fetch(
-        `https://coinswipe.pythonanywhere.com/wallet/profile/${TELEGRAM_MOCK_ID}/`
+        `${HOST}/wallet/profile/${TELEGRAM_MOCK_ID}/`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");

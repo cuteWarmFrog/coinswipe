@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useBalance } from "wagmi";
-import { formatNumber, TELEGRAM_MOCK_ID } from "@/lib/utils";
+import { formatNumber, HOST, TELEGRAM_MOCK_ID } from "@/lib/utils";
 import { ModeToggle } from "@/components/theme-toggle";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,7 @@ export default function SettingsPage() {
     queryKey: ["wallet", TELEGRAM_MOCK_ID],
     queryFn: async () => {
       const response = await fetch(
-        `https://coinswipe.pythonanywhere.com/wallet/profile/${TELEGRAM_MOCK_ID}/`
+        `${HOST}/wallet/profile/${TELEGRAM_MOCK_ID}/`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");

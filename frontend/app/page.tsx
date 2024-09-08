@@ -28,7 +28,7 @@ const LoginPage = () => {
   const router = useRouter();
 
   const onSuccess = () => {
-    router.push("/swipe");
+    router.push("/profile");
   };
 
   return (

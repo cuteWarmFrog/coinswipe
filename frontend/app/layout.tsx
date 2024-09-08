@@ -6,6 +6,7 @@ import QueryProvider from "@/app/query-provider";
 import NavBar from "@/components/nav-bar";
 import Script from "next/script";
 import TelegramSetup from "./telegram";
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -47,6 +48,7 @@ export default function RootLayout({
             <TelegramSetup />
             {children}
             <NavBar />
+            <Toaster />
           </ThemeProvider>
         </QueryProvider>
       </body>

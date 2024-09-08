@@ -160,6 +160,13 @@ export default function Component(props: Props) {
         if (trigger) {
           console.log(dir === 1 ? "Swiped right (Buy)" : "Swiped left (Skip)");
           animateSwipe(dir);
+
+          if (dir === 1) {
+            axios.post(`${HOST}/perform_swap/`, {
+              memecoin_address: address,
+              telegram_id: telegramId,
+            });
+          }
         } else {
           api.start({
             x: 0,

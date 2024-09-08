@@ -69,10 +69,12 @@ const PositionRow = ({ position }: { position: Position }) => {
   });
 
   const sell = useCallback(async () => {
-    axios.post(`${HOST}/sell_memecoin/`, {
-      memecoin_address: position.address,
-      telegram_id: telegramId,
-    });
+    axios
+      .post(`${HOST}/sell_memecoin/`, {
+        memecoin_address: position.address,
+        telegram_id: telegramId,
+      })
+      .catch((error) => console.log(error));
 
     setTimeout(() => {
       queryClient.invalidateQueries({ queryKey: ["positions"] });

@@ -1,12 +1,13 @@
 import React from "react";
 import { MatchList } from "@/components/matches";
+import { useToast } from "@/hooks/use-toast";
 
 const matchesMOCK = [
   {
-    name: "Theire",
-    image: "https://github.com/shadcn.png",
-    link: 'tg://user?id=1310536731',
-    usernameLink: "https://t.me/thierry123454"
+    name: "Thierry",
+    image: "thierry.jpg",
+    link: "tg://user?id=1310536731",
+    usernameLink: "https://t.me/thierry123454",
   },
 ];
 

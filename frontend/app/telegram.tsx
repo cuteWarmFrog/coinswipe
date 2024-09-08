@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useAtom } from 'jotai'
+import { useAtom } from "jotai";
 import { telegramIdAtom } from "@/lib/utils";
 
 export default function TelegramSetup() {
@@ -26,9 +26,5 @@ export default function TelegramSetup() {
     }
   }, []);
 
-  return (
-      <div>
-        <p>Telegram ID: {telegramId}</p>
-      </div>
-  );
+  return <div>{/* <p>Telegram ID: {telegramId}</p> */}</div>;
 }

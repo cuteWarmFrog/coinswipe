@@ -58,7 +58,7 @@ const LoginPage = () => {
         </IDKitWidget>
       </div>
       <Button variant="ghost">
-        <Link href="/swipe">Skip</Link>
+        <Link href="/portfolio">Skip</Link>
       </Button>
     </div>
   );
